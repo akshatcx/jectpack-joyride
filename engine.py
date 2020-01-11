@@ -7,5 +7,5 @@ class Engine:
     '''
 
     def __init__(self):
-        self.arena = Arena(self)
-        self.player = Mando(self)
+        self.arena = Arena()
+        self.player = Mando()

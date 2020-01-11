@@ -1,23 +1,21 @@
 import numpy as np
 from colorama import Fore, Back, Style 
 
-from config import all
+from config import *
 
 class Arena:
     """Represents a single screen
     """
 
-    def __init__(self, engine):
-        self.engine = engine
+    def __init__(self):
         self.board = self.gen_board()
 
-    def gen_scene():
-        board = np.array([[0 for col in range(WIDTH)]
-                            for row in range(HEIGHT)])
-        board[56:64] = [[6] * WIDTH]*8
-        return board
+    def gen_board(self):
+        new_board = np.zeros((HEIGHT, WIDTH))
+        new_board[56:64, :] = 6
+        return new_board
 
-    def render():
+    def render(self):
         trackc = 0
         
         color_mappings = {
@@ -30,8 +28,5 @@ class Arena:
                 print(color_mappings[pixel])
 
         print(Style.RESET_ALL + '')
+
     
-    def board(self, x, y):
-        return board[x][y]
-
-
