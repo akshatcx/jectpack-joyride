@@ -1,88 +1,108 @@
-from config import all
+import numpy as np
+from config import *
 
 class Character:
     
-    def __init__(self, engine):
+    def __init__(self):
         
         #Check inheritance contructor
         
-        _id = None
-        _lives = 0
-        _health = 0
-        _size = [0, 0]
-        _location = [0, 0]
-        _velocity_y = -1 * GRAVITY
+        self.id = None
+        self.lives = 0
+        self.health = 0
+        self.size = [0, 0]
+        self.location = [0, 0]
+        self.velocity_y = -1 * GRAVITY
 
-        right = 0
-        left = 0
-        down = 0
-        up = 0
-    
+        self.right = 0
+        self.left = 0
+        self.down = 0
+        self.up = 0
+    """
     @property
     def id(self):
-        return _id
+        return self.id
     
     @property
     def location(self):
-        return _location
+        return self.location
     
     @property
     def size(self):
-        return _size
+        return self.size
+    """
+
+    def init_location(self, board):
+        print(self.location)
+        board[self.location[0] - self.size[0]+1:self.location[0]+1,self.location[1]:self.location[1] + self.size[1]] = np.full((self.size[0], self.size[1]),self.id)
 
     def check_proximity(self, board):
-        if location[1] + size[1] >= WIDTH:
-            right = -1
+        if self.location[1] + self.size[1] >= WIDTH:
+            self.right = -1
         else:
-            right=max(board[location[0]-size[0]+1:location[0]+1,location[1]+size[1]])
+            self.right=max(board[self.location[0]-self.size[0]+1:self.location[0]+1,self.location[1]+self.size[1]])
 
-        if location[1] - 1 < 0:
-            left = -1
+        if self.location[1] - 1 < 0:
+            self.left = -1
         else:
-            left = max(board[location[0]-size[0]+1:location[0]+1, location[1]-1])
+            self.left = max(board[self.location[0]-self.size[0]+1:self.location[0]+1, self.location[1]-1])
         
-        if location[0] - size[0] < 0:
-            up = -1
+        if self.location[0] - self.size[0] < 0:
+            self.up = -1
         else:
-            up = max(board[location[0] - size[0], location[1]:location[1] + size[1]])
+            self.up = max(board[self.location[0] - self.size[0], self.location[1]:self.location[1] + self.size[1]])
 
-        if location[0] + 1 >= HEIGHT:
-            down = -1
+        if self.location[0] + 1 >= HEIGHT:
+            self.down = -1
         else:
-            down = max(board[location[0] + 1,location[1]:location[1] + size[1]])
-    
+            self.down = max(board[self.location[0] + 1,self.location[1]:self.location[1] + self.size[1]])
+        
+        print(f"right: {self.right}")
+        print(f"left: {self.left}")
+        print(f"down: {self.down}")
+        print(f"up: {self.up}")
     def move(self, board, key,):
         
         if key == 'd':
             #Check if there is space on the right
-            if right == 0:
-                board[location[0] - size[0] + 1:location[0] + 1,location[1]] = [0] * size[0]
-                board[location[0]-size[0]+1:location[0]+1,location[1]+size[1]] = [_id] * size[0]
-                location[1] += 1
+            if self.right == 0:
+                board[self.location[0] - self.size[0] + 1:self.location[0] + 1,self.location[1]] = [0] * self.size[0]
+                board[self.location[0]-self.size[0]+1:self.location[0]+1,self.location[1]+self.size[1]] = [self.id] * self.size[0]
+                self.location[1] += 1
 
         if key == 'a':
             #Check if there is space on the left
-            if left == 0:
-                board[location[0]-size[0]+1:location[0]+1, location[1]+size[1]] = [0] * size[0]
-                board[location[0]-size[0]+1:location[0]+1, location[1]-1] = [_id] * size[0]
-                location[1] -= 1
+            if self.left == 0:
+                board[self.location[0]-self.size[0]+1:self.location[0]+1, self.location[1]+self.size[1]-1] = [0] * self.size[0]
+                board[self.location[0]-self.size[0]+1:self.location[0]+1, self.location[1]-1] = [self.id] * self.size[0]
+                self.location[1] -= 1
 
         if key == 'w':
-            _velocity_y += JUMP_VEL
+            self.velocity_y += JUMP_VEL
             
-        if _velocity_y > 0:
+        if self.velocity_y > 0:
             #Check if there is space on the top
-            if top == 0:
-                board[location[0], location[1]:location[1] + size[1]] = [0] * size[1]
-                board[location[0] - size[0], location[1]:location[1] + size[1]] = [_id] * size[1]
-                location[0] -= 1
+            if self.up == 0:
+                board[self.location[0], self.location[1]:self.location[1] + self.size[1]] = [0] * self.size[1]
+                board[self.location[0] - self.size[0], self.location[1]:self.location[1] + self.size[1]] = [self.id] * self.size[1]
+                self.location[0] -= 1
         
-        elif _velocity_y < 0:
+        elif self.velocity_y < 0:
             #Check if there is space in the bottom
-            if bottom == 0:
-                board[location[0] - size[0] + 1,location[1]:location[1] + size[1]] = [0] * size[1]
-                board[location[0] + 1,location[1]:location[1] + size[1]] = [_id] * size[1]
-                location[0] += 1
+            if self.down == 0:
+                board[self.location[0] - self.size[0] + 1,self.location[1]:self.location[1] + self.size[1]] = [0] * self.size[1]
+                board[self.location[0] + 1,self.location[1]:self.location[1] + self.size[1]] = [self.id] * self.size[1]
+                self.location[0] += 1
+        self.velocity_y = -1
 
-
-
+class Mando(Character):
+   
+    def __init__(self):
+        
+        Character.__init__(self)
+        self.id = 1
+        self.lives = M_LIVES
+        self.health = M_HEALTH
+        self.size = M_SIZE
+        self.location = M_INIT_LOCATION
+        

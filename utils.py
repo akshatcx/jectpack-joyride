@@ -9,7 +9,10 @@ class NBInput:
 
     def __init__(self):
         self.old_settings = termios.tcgetattr(sys.stdin)
-
+    
+    def nb_term(cls):
+        tty.setcbreak(sys.stdin.fileno())
+    
     def reset_term(self):
         termios.tcgetattr(sys.stdin, termios.TCSADRAIN, self.old_settings)
 
@@ -26,7 +29,7 @@ class NBInput:
         termios.tcflush(sys.stdin, termios.TCIOFLUSH)
 
 def clear():
-    sp.call('clear', Shell = True)
+    sp.call('clear', shell = True)
 
 
 
