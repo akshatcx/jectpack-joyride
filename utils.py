@@ -6,13 +6,12 @@ import subprocess as sp
 
 
 class NBInput:
-
     def __init__(self):
         self.old_settings = termios.tcgetattr(sys.stdin)
-    
+
     def nb_term(cls):
         tty.setcbreak(sys.stdin.fileno())
-    
+
     def reset_term(self):
         termios.tcgetattr(sys.stdin, termios.TCSADRAIN, self.old_settings)
 
@@ -27,6 +26,3 @@ class NBInput:
     @classmethod
     def flush(cls):
         termios.tcflush(sys.stdin, termios.TCIOFLUSH)
-
-
-

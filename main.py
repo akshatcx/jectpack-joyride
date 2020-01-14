@@ -4,10 +4,12 @@ from engine import Engine
 from config import *
 import colorama
 
+
 def main():
-    colorama.init() 
+    colorama.init()
     engine = Engine()
     engine.play()
 
-if '__name__' == '__main__':
+
+if "__name__" == "__main__":
     main()
