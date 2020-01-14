@@ -8,8 +8,8 @@ class Base:
         self.location = []
 
     def place(self, board, element):
-        print(f"location: {self.location}")
-        print(f"size: {self.size}")
+        #print(f"location: {self.location}")
+        #print(f"size: {self.size}")
         board[self.location[0] - self.size[0]+1:self.location[0]+1,self.location[1]:self.location[1] + self.size[1]] = np.full((self.size[0], self.size[1]),element)
 
 class Character(Base):    
@@ -46,10 +46,10 @@ class Character(Base):
         else:
             self.down = board[self.location[0] + 1,self.location[1]:self.location[1] + self.size[1]]
         
-        print(f"right: {self.right}")
-        print(f"left: {self.left}")
-        print(f"down: {self.down}")
-        print(f"up: {self.up}")
+        #print(f"right: {self.right}")
+        #print(f"left: {self.left}")
+        #print(f"down: {self.down}")
+        #print(f"up: {self.up}")
 
     def pick_coin(self, board, proximity):
         return np.count_nonzero(proximity == 1)

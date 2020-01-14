@@ -30,7 +30,7 @@ class Engine:
         sys.stdout.write(f"Score: {self.score}\n")
 
     def game_over(self):
-        sys.stdout.write("\x1bc")
+        #sys.stdout.write("\x1bc")
         print("GAME OVER!!")
         print(f"Final Score: {self.score}")
         
