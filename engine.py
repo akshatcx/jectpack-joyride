@@ -10,8 +10,7 @@ class Engine:
 
     def __init__(self):
         self.arena = Arena()
-        self.player = Mando()
-        self.player.init_location(self.arena.board)
+        self.player = Mando(self.arena.board)
         
     def transition(self, key):
         self.player.check_proximity(self.arena.board)
