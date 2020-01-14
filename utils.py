@@ -28,8 +28,5 @@ class NBInput:
     def flush(cls):
         termios.tcflush(sys.stdin, termios.TCIOFLUSH)
 
-def clear():
-    sp.call('clear', shell = True)
-
 
 
