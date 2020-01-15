@@ -59,13 +59,14 @@ class Arena:
         color_mappings = {
             0: Back.BLACK + Fore.BLACK + " ",
             1: Back.BLACK + Fore.YELLOW + "\u25CF",
+            3: Back.BLUE + Fore.WHITE + "+",
+            4: Back.BLACK + Fore.WHITE + "-",
             5: Back.WHITE + Fore.WHITE + " ",
             6: Back.GREEN + Fore.GREEN + " ",
             7: Back.RED + Fore.RED + " ",
             8: Back.RED + Fore.RED + " ",
             9: Back.RED + Fore.RED + " ",
             10: Back.RED + Fore.RED + " ",
-            3: Back.BLUE + Fore.WHITE + "+",
         }
         buff = "\n".join(
             [

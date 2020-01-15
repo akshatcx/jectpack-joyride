@@ -18,6 +18,7 @@ class Engine:
     def transition(self, key):
         self.player.check_proximity(self.arena.board)
         status = self.player.move(self.arena.board, key)
+        self.player.move_weapons(self.arena.board)
         if status == -1:
             return -1
         else:

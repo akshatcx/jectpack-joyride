@@ -12,6 +12,7 @@ LH_SIZE = [1, 12]
 LV_SIZE = [6, 2]
 LD_SIZE = [6, 7]
 MG_SIZE = [1, 1]
+B_SIZE = [1,1]
 
 # Mando
 M_LIVES = 3

@@ -1,21 +1,7 @@
 import numpy as np
 from config import *
-
-
-class Base:
-    def __init__(self):
-        self.id = None
-        self.size = []
-        self.location = []
-
-    def place(self, board, element):
-        # print(f"location: {self.location}")
-        # print(f"size: {self.size}")
-        board[
-            self.location[0] - self.size[0] + 1 : self.location[0] + 1,
-            self.location[1] : self.location[1] + self.size[1],
-        ] = np.full((self.size[0], self.size[1]), element)
-
+from props import Bullet
+from base import Base
 
 class Character(Base):
     def __init__(self):
@@ -23,7 +9,8 @@ class Character(Base):
         self.lives = 0
         self.health = 0
         self.velocity_y = -1 * GRAVITY
-
+        
+        self.weapons = []
         self.right = []
         self.left = []
         self.down = []
@@ -118,8 +105,17 @@ class Character(Base):
                 return -1
 
         self.velocity_y = -1
+
+        if key == "q":
+            bullet = Bullet(board, [self.location[0] - self.size[0] +1,self.location[1] + self.size[1]])
+            self.weapons.append(bullet)
+            print(self.weapons)
+        
         return score_delta
 
+    def move_weapons(self, board):
+        for weapon in self.weapons:
+            weapon.advance(board)
 
 class Mando(Character):
     def __init__(self, board):
