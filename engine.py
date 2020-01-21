@@ -2,6 +2,7 @@ import sys
 from arena import Arena
 from characters import Mando
 from utils import NBInput
+import os
 import time
 
 
@@ -15,10 +16,14 @@ class Engine:
         self.player = Mando(self.arena.board)
         self.score = 0
         self.start = time.time()
+        self.frame = 0
 
     def transition(self, key):
-        self.player.check_proximity(self.arena.board)
-        status = self.player.move(self.arena.board, key)
+        self.player.check_proximity(self.arena.board, self.frame)
+        self.frame += 1
+        status = self.player.move_relative(self.arena.board)            
+        self.player.check_proximity(self.arena.board, self.frame)
+        status += self.player.move(self.arena.board, key)
         self.player.upd_att(self.arena.board, key)
         if status == -1:
             return -1
@@ -27,9 +32,10 @@ class Engine:
             return 0
 
     def repaint(self):
-        sys.stdout.flush()
-        sys.stdout.write("\x1bc")
-        self.arena.render()
+        #sys.stdout.flush()
+        #sys.stdout.write("\x1bc")
+        print("\x1bc")
+        self.arena.render(self.frame)
         sys.stdout.write(f"Score: {self.score}\n")
 
     def game_over(self):
@@ -50,4 +56,4 @@ class Engine:
                 self.game_over()
                 break
             KEYS.flush()
-            time.sleep(0.07)
+            time.sleep(0.08)

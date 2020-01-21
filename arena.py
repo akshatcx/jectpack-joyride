@@ -54,7 +54,7 @@ class Arena:
 
         return new_board
 
-    def render(self):
+    def render(self, frame):
 
         color_mappings = {
             0: Back.BLACK + Fore.BLACK + " ",
@@ -69,10 +69,16 @@ class Arena:
             10: Back.RED + Fore.RED + " ",
             11: Back.MAGENTA + Fore.MAGENTA + " ",
         }
+        """
         buff = "\n".join(
             [
-                f"{''.join([color_mappings[pixel] for pixel in row])}{Style.RESET_ALL}"
+                f"{''.join([color_mappings[pixel] for pixel in row[frame:frame + HEIGHT*2 + 1]])}{Style.RESET_ALL}"
                 for row in self.board
             ]
         )
         stdout.write(buff + "\n")
+        """
+        for row in self.board:
+            for pixel in row[frame:frame+ (HEIGHT*2)+1]:
+                print(color_mappings[pixel], end = '')
+            print()        

@@ -17,8 +17,8 @@ class Character(Base):
         self.down = []
         self.up = []
 
-    def check_proximity(self, board):
-        if self.location[1] + self.size[1] >= WIDTH:
+    def check_proximity(self, board, frame):
+        if self.location[1] + self.size[1] >= frame + HEIGHT*2 + 1:
             self.right = [100] * self.size[0]
         else:
             self.right = board[
@@ -26,7 +26,7 @@ class Character(Base):
                 self.location[1] + self.size[1],
             ]
 
-        if self.location[1] - 1 < 0:
+        if self.location[1] - 1 < frame:
             self.left = [100] * self.size[0]
         else:
             self.left = board[
@@ -76,7 +76,7 @@ class Mando(Character):
     ):
 
         score_delta = 0
-        if key == "d":
+        if key == "d":            
             # Check if there is space on the right
             if max(self.right) <= 1 or self.shield:
                 score_delta += self.pick_coin(board, self.right)
@@ -129,8 +129,20 @@ class Mando(Character):
         
         return score_delta
 
+    def move_relative(self, board):
+        score_delta = 0
+        if max(self.right) <= 1 or self.shield:
+                score_delta += self.pick_coin(board, self.right)
+                self.place(board, 0)
+                self.location[1] += 1
+                self.place(board, self.id)
+        elif max(self.right) in [7, 8, 9, 10] and self.shield == False:
+            return -1
+        return score_delta
+
     def upd_att(self, board, key):
         for weapon in self.weapons:
+            weapon.advance(board)
             weapon.advance(board)
         
         if key == "z":
