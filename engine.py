@@ -4,6 +4,7 @@ from characters import Mando
 from utils import NBInput
 import os
 import time
+from config import *
 
 
 class Engine:
@@ -19,24 +20,18 @@ class Engine:
         self.frame = 0
 
     def transition(self, key):
-        self.player.check_proximity(self.arena.board, self.frame)
         self.frame += 1
-        status = self.player.move_relative(self.arena.board)            
-        self.player.check_proximity(self.arena.board, self.frame)
-        status += self.player.move(self.arena.board, key)
+        status = self.player.move_relative(self.arena.board, self.frame)            
+        status += self.player.move(self.arena.board, key, self.frame)
         self.player.upd_att(self.arena.board, key)
-        if status == -1:
-            return -1
-        else:
-            self.score += status
-            return 0
+        self.score += status
 
     def repaint(self):
         #sys.stdout.flush()
         #sys.stdout.write("\x1bc")
         print("\x1bc")
         self.arena.render(self.frame)
-        sys.stdout.write(f"Score: {self.score}\n")
+        print(f"Score: {self.score}\t Lives: {self.player.lives}\t Time Left: {int(GAME_TIME - (time.time() - self.start))}secs\n")
 
     def game_over(self):
         # sys.stdout.write("\x1bc")
@@ -46,14 +41,12 @@ class Engine:
     def play(self):
         KEYS = NBInput()
         KEYS.nb_term()
-        while True:
+        while self.player.lives > 0 and time.time() - self.start < GAME_TIME:
             self.repaint()
+            time.sleep(0.1)
             INPUT = ""
             if KEYS.kb_hit():
                 INPUT = KEYS.get_ch()
-            status = self.transition(INPUT)
-            if status == -1:
-                self.game_over()
-                break
+            self.transition(INPUT)
             KEYS.flush()
-            time.sleep(0.08)
+        self.game_over()

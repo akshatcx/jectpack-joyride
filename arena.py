@@ -81,4 +81,4 @@ class Arena:
         for row in self.board:
             for pixel in row[frame:frame+ (HEIGHT*2)+1]:
                 print(color_mappings[pixel], end = '')
-            print()        
+            print(Style.RESET_ALL)

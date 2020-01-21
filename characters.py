@@ -72,9 +72,9 @@ class Mando(Character):
         return np.count_nonzero(proximity == 1)
 
     def move(
-        self, board, key,
+        self, board, key, frame
     ):
-
+        self.check_proximity(board, frame)
         score_delta = 0
         if key == "d":            
             # Check if there is space on the right
@@ -84,7 +84,7 @@ class Mando(Character):
                 self.location[1] += 1
                 self.place(board, self.id)
             elif max(self.right) in [7, 8, 9, 10] and self.shield == False:
-                return -1
+                self.lives -= 1
 
         if key == "a":
             # Check if there is space on the left
@@ -94,7 +94,7 @@ class Mando(Character):
                 self.location[1] -= 1
                 self.place(board, self.id)
             elif max(self.left) in [7, 8, 9, 10]:
-                return -1
+                self.lives -= 1
 
         if key == "w":
             self.velocity_y += JUMP_VEL
@@ -107,7 +107,7 @@ class Mando(Character):
                 self.location[0] -= 1
                 self.place(board, self.id)
             elif max(self.up) in [7, 8, 9, 10]:
-                return -1
+                self.lives -= 1
 
         elif self.velocity_y < 0:
             # Check if there is space in the bottom
@@ -117,7 +117,7 @@ class Mando(Character):
                 self.location[0] += 1
                 self.place(board, self.id)
             elif max(self.down) in [7, 8, 9, 10]:
-                return -1
+                self.lives -= 1
 
         self.velocity_y = -1
         
@@ -129,15 +129,16 @@ class Mando(Character):
         
         return score_delta
 
-    def move_relative(self, board):
+    def move_relative(self, board, frame):
         score_delta = 0
+        self.check_proximity(board, frame)
         if max(self.right) <= 1 or self.shield:
                 score_delta += self.pick_coin(board, self.right)
                 self.place(board, 0)
                 self.location[1] += 1
                 self.place(board, self.id)
         elif max(self.right) in [7, 8, 9, 10] and self.shield == False:
-            return -1
+            self.lives -= 1
         return score_delta
 
     def upd_att(self, board, key):
