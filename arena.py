@@ -67,6 +67,7 @@ class Arena:
             8: Back.RED + Fore.RED + " ",
             9: Back.RED + Fore.RED + " ",
             10: Back.RED + Fore.RED + " ",
+            11: Back.MAGENTA + Fore.MAGENTA + " ",
         }
         buff = "\n".join(
             [

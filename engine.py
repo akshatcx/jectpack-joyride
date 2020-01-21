@@ -14,11 +14,12 @@ class Engine:
         self.arena = Arena()
         self.player = Mando(self.arena.board)
         self.score = 0
+        self.start = time.time()
 
     def transition(self, key):
         self.player.check_proximity(self.arena.board)
         status = self.player.move(self.arena.board, key)
-        self.player.move_weapons(self.arena.board)
+        self.player.upd_att(self.arena.board, key)
         if status == -1:
             return -1
         else:
