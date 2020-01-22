@@ -11,8 +11,12 @@ class Arena:
     """
 
     def __init__(self):
-        self.board = self.gen_board()
+        self.__board = self.gen_board()
 
+    @property
+    def board(self):
+        return self.__board
+        
     def gen_board(self):
         new_board = np.zeros((HEIGHT, WIDTH))
         floor = Floor(new_board, [HEIGHT - 1, 0])
@@ -83,6 +87,6 @@ class Arena:
         stdout.write(buff + "\n")
         """
         for row in self.board:
-            for pixel in row[frame:frame+ (HEIGHT*2)+1]:
+            for pixel in row[frame:frame+ (HEIGHT*3)+1]:
                 print(color_mappings[pixel], end = '')
             print(Style.RESET_ALL)
