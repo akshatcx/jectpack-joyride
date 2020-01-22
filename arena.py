@@ -18,13 +18,13 @@ class Arena:
         floor = Floor(new_board, [HEIGHT - 1, 0])
 
         prop_counts = {
-            Coin: 10,
-            Lazer_H: 6,
-            Lazer_V: 6,
-            Lazer_D1: 4,
-            Lazer_D2: 4,
+            Coin: 15,
+            Lazer_H: 10,
+            Lazer_V: 10,
+            Lazer_D1: 6,
+            Lazer_D2: 6,
             Magnet: 1,
-            Powerup: 3,
+            Powerup: 1,
         }
 
         for prop in prop_counts:

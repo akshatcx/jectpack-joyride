@@ -3,6 +3,7 @@ from config import *
 from props import Bullet, IceBall
 from base import Base
 import time
+from utils import *
 
 class Character(Base):
     def __init__(self):
@@ -144,6 +145,18 @@ class Mando(Character):
             print(self.weapons)
         
         return score_delta
+
+    def checkmag(self, board, frame):
+        if 3 in board[maxh(self.location[0] - 20): maxh(self.location[0] + 20), maxw(self.location[1] - 40): maxw(self.location[1] + 40)]:
+            mag_loc = np.where(board == 3)
+            if int(mag_loc[0]) > self.location[0]:
+                self.move(board, "", frame)
+            elif int(mag_loc[0]) < self.location[0]:
+                self.move(board, "w", frame)
+            if int(mag_loc[1]) > self.location[1]:
+                self.move(board, "d", frame)
+            elif int(mag_loc[1]) < self.location[1]:
+                self.move(board, "a", frame)
 
     def move_relative(self, board, frame):
         score_delta = 0

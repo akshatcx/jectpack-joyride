@@ -27,7 +27,8 @@ class Engine:
         if self.frame < WIDTH - ENEMY_OFFSET:
             for i in range(self.framerate):
                 self.frame += 1
-                status += self.player.move_relative(self.arena.board, self.frame)            
+                status += self.player.move_relative(self.arena.board, self.frame) 
+        self.player.checkmag(self.arena.board, self.frame)           
         status += self.player.move(self.arena.board, key, self.frame)
         self.player.upd_att(self.arena.board, key, self.frame)
         self.enemy.move(self.arena.board,self.player.location)
@@ -47,11 +48,14 @@ class Engine:
         # sys.stdout.write("\x1bc")
         print("GAME OVER!!")
         print(f"Final Score: {self.score}")
+    
+    def win(self):
+        print(f"You Win!\nFinal Score: {self.score}")
 
     def play(self):
         KEYS = NBInput()
         KEYS.nb_term()
-        while self.player.lives > 0 and time.time() - self.start < GAME_TIME and self.enemy.lives > 0:
+        while time.time() - self.start < GAME_TIME:
             self.repaint()
             time.sleep(0.08)
             INPUT = ""
@@ -59,4 +63,9 @@ class Engine:
                 INPUT = KEYS.get_ch()
             self.transition(INPUT)
             KEYS.flush()
-        self.game_over()
+            if self.enemy.lives == 0:
+                self.win()
+                break
+            if self.player.lives == 0:
+                self.game_over()
+                break
