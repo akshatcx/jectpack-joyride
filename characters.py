@@ -67,18 +67,31 @@ class Mando(Character):
         self.place(board, self.id)
         self.shield = False
         self.stime = time.time() - 70
+        self.fast = False
+        self.ftime = time.time() - 5
 
     def pick_coin(self, board, proximity):
         return np.count_nonzero(proximity == 1)
 
+    def powerup(self, proximity):
+        if 2 in proximity:
+            self.ftime = time.time()
+            self.fast = True
+    
+    def frate(self):
+        if self.fast:
+            return 2
+        return 1
+    
     def move(
         self, board, key, frame
     ):
         self.check_proximity(board, frame)
         score_delta = 0
-        if key == "d":            
+        if key == "d":
+            self.powerup(self.right)            
             # Check if there is space on the right
-            if max(self.right) <= 1 or self.shield:
+            if max(self.right) <= 2 or self.shield:
                 score_delta += self.pick_coin(board, self.right)
                 self.place(board, 0)
                 self.location[1] += 1
@@ -87,8 +100,9 @@ class Mando(Character):
                 self.lives -= 1
 
         if key == "a":
+            self.powerup(self.left)            
             # Check if there is space on the left
-            if max(self.left) <= 1 or self.shield:
+            if max(self.left) <= 2 or self.shield:
                 score_delta += self.pick_coin(board, self.left)
                 self.place(board, 0)
                 self.location[1] -= 1
@@ -100,8 +114,9 @@ class Mando(Character):
             self.velocity_y += JUMP_VEL
 
         if self.velocity_y > 0:
+            self.powerup(self.up)            
             # Check if there is space on the top
-            if max(self.up) <= 1 or self.shield:
+            if max(self.up) <= 2 or self.shield:
                 score_delta += self.pick_coin(board, self.up)
                 self.place(board, 0)
                 self.location[0] -= 1
@@ -110,8 +125,9 @@ class Mando(Character):
                 self.lives -= 1
 
         elif self.velocity_y < 0:
+            self.powerup(self.down)            
             # Check if there is space in the bottom
-            if (max(self.down) <= 1 or self.shield) and max(self.down) != 6:
+            if (max(self.down) <= 2 or self.shield) and max(self.down) != 6:
                 score_delta += self.pick_coin(board, self.down)
                 self.place(board, 0)
                 self.location[0] += 1
@@ -132,11 +148,12 @@ class Mando(Character):
     def move_relative(self, board, frame):
         score_delta = 0
         self.check_proximity(board, frame)
-        if max(self.right) <= 1 or self.shield:
-                score_delta += self.pick_coin(board, self.right)
-                self.place(board, 0)
-                self.location[1] += 1
-                self.place(board, self.id)
+        self.powerup(self.right)            
+        if max(self.right) <= 2 or self.shield:
+            score_delta += self.pick_coin(board, self.right)
+            self.place(board, 0)
+            self.location[1] += 1
+            self.place(board, self.id)
         elif max(self.right) in [7, 8, 9, 10, 15] and self.shield == False:
             self.lives -= 1
         return score_delta
@@ -154,6 +171,8 @@ class Mando(Character):
                 self.id = 11
                 self.place(board, self.id)
 
+        if self.fast and time.time() - self.ftime >= 5:
+            self.fast = False
         if self.shield and time.time() - self.stime >= 10:
             self.shield = False
             self.id = 5

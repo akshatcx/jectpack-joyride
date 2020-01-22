@@ -19,12 +19,15 @@ class Engine:
         self.score = 0
         self.start = time.time()
         self.frame = 0
+        self.framerate = 2
 
     def transition(self, key):
         status = 0
+        self.framerate = self.player.frate()
         if self.frame < WIDTH - ENEMY_OFFSET:
-            self.frame += 1
-            status += self.player.move_relative(self.arena.board, self.frame)            
+            for i in range(self.framerate):
+                self.frame += 1
+                status += self.player.move_relative(self.arena.board, self.frame)            
         status += self.player.move(self.arena.board, key, self.frame)
         self.player.upd_att(self.arena.board, key, self.frame)
         self.enemy.move(self.arena.board,self.player.location)

@@ -79,6 +79,13 @@ class Magnet(Base):
         self.location = location
         self.size = MG_SIZE
 
+class Powerup(Base):
+    def __init__(self, board, location):
+        super().__init__()
+        self.id = 2
+        self.location = location
+        self.size = P_SIZE
+
 class Bullet(Base):
     def __init__(self, board, location):
         super().__init__()

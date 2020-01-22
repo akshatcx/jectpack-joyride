@@ -18,12 +18,13 @@ class Arena:
         floor = Floor(new_board, [HEIGHT - 1, 0])
 
         prop_counts = {
-            Coin: 8,
-            Lazer_H: 4,
-            Lazer_V: 4,
-            Lazer_D1: 2,
-            Lazer_D2: 2,
-            Magnet: 2,
+            Coin: 10,
+            Lazer_H: 6,
+            Lazer_V: 6,
+            Lazer_D1: 4,
+            Lazer_D2: 4,
+            Magnet: 1,
+            Powerup: 3,
         }
 
         for prop in prop_counts:
@@ -58,9 +59,10 @@ class Arena:
 
         color_mappings = {
             0: Back.BLACK + Fore.BLACK + " ",
+            2: Back.BLUE + Fore.BLUE + ">",
             1: Back.BLACK + Fore.YELLOW + "\u25CF",
             3: Back.BLUE + Fore.WHITE + "+",
-            4: Back.BLACK + Fore.WHITE + "-",
+            4: Back.BLACK + Fore.WHITE + "\u254D",
             5: Back.WHITE + Fore.WHITE + " ",
             6: Back.GREEN + Fore.GREEN + " ",
             7: Back.RED + Fore.RED + " ",
