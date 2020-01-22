@@ -41,7 +41,7 @@ class Engine:
         #sys.stdout.flush()
         #sys.stdout.write("\x1bc")
         print("\x1bc")
-        self.arena.render(self.frame)
+        self.arena.render(self.frame, self.enemy.location)
         print(f"Score: {self.score}\t Lives: {self.player.lives}\t Time Left: {int(GAME_TIME - (time.time() - self.start))}secs\t Enemy Lives: {self.enemy.lives}\n")
 
     def game_over(self):
@@ -63,9 +63,9 @@ class Engine:
                 INPUT = KEYS.get_ch()
             self.transition(INPUT)
             KEYS.flush()
-            if self.enemy.lives == 0:
+            if self.enemy.lives <= 0:
                 self.win()
                 break
-            if self.player.lives == 0:
+            if self.player.lives <= 0:
                 self.game_over()
                 break

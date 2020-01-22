@@ -16,19 +16,19 @@ class Arena:
     @property
     def board(self):
         return self.__board
-        
+
     def gen_board(self):
         new_board = np.zeros((HEIGHT, WIDTH))
         floor = Floor(new_board, [HEIGHT - 1, 0])
 
         prop_counts = {
-            Coin: 15,
-            Lazer_H: 10,
-            Lazer_V: 10,
+            Coin: 12,
+            Lazer_H: 8,
+            Lazer_V: 8,
             Lazer_D1: 6,
             Lazer_D2: 6,
             Magnet: 1,
-            Powerup: 1,
+            Powerup: 2,
         }
 
         for prop in prop_counts:
@@ -59,7 +59,7 @@ class Arena:
 
         return new_board
 
-    def render(self, frame):
+    def render(self, frame, dloc):
 
         color_mappings = {
             0: Back.BLACK + Fore.BLACK + " ",
@@ -76,6 +76,14 @@ class Arena:
             11: Back.MAGENTA + Fore.MAGENTA + " ",
             14: Back.BLUE + Fore.BLUE + " ",
             15: Back.BLACK + Fore.BLUE + "\u2744",
+            21: Back.BLACK + Fore.BLUE + " ",
+            22: Back.BLACK + Fore.RED + "/",
+            23: Back.BLACK + Fore.RED + ",",
+            24: Back.BLACK + Fore.RED + ";",
+            25: Back.BLACK + Fore.RED + "'",
+            26: Back.BLACK + Fore.RED + ".",
+            27: Back.BLACK + Fore.RED + ":",
+            28: Back.BLACK + Fore.RED + "`",
         }
         """
         buff = "\n".join(
@@ -86,7 +94,31 @@ class Arena:
         )
         stdout.write(buff + "\n")
         """
+        
+        
+        dragon = "  /,,;';;.  ,;;;..  ,,;.    '\n.',''   `::;:' ``;;;;'  `..' \n`      ,,/'     ,,//         "
+        dnp = np.zeros(E_SIZE)
+
+        m = {
+            " ": 21,
+            "/": 22,
+            ",": 23,
+            ";": 24,
+            "'": 25,
+            ".": 26,
+            ":": 27,
+            "`": 28,
+        }
+
+        for i,line in zip(range(3),dragon.split('\n')):
+            for j, l in zip(range(29), line):
+                dnp[i,j] = m[l]
+        
+        self.board[dloc[0]-2:dloc[0] -2+ E_SIZE[0],dloc[1]:dloc[1] + E_SIZE[1]] = dnp
+        
         for row in self.board:
             for pixel in row[frame:frame+ (HEIGHT*3)+1]:
                 print(color_mappings[pixel], end = '')
             print(Style.RESET_ALL)
+
+        self.board[dloc[0]-2:dloc[0] + E_SIZE[0]-2,dloc[1]:dloc[1] + E_SIZE[1]] = np.full(E_SIZE, 14)

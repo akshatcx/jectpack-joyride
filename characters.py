@@ -4,6 +4,7 @@ from props import Bullet, IceBall
 from base import Base
 import time
 from utils import *
+import sys
 
 class Character(Base):
     def __init__(self):
@@ -49,11 +50,6 @@ class Character(Base):
             self.down = board[
                 self.location[0] + 1, self.location[1] : self.location[1] + self.size[1]
             ]
-
-        # print(f"right: {self.right}")
-        # print(f"left: {self.left}")
-        # print(f"down: {self.down}")
-        # print(f"up: {self.up}")
 
 
 class Mando(Character):
@@ -153,6 +149,7 @@ class Mando(Character):
                 self.move(board, "", frame)
             elif int(mag_loc[0]) < self.location[0]:
                 self.move(board, "w", frame)
+                self.move(board, "w", frame)
             if int(mag_loc[1]) > self.location[1]:
                 self.move(board, "d", frame)
             elif int(mag_loc[1]) < self.location[1]:
@@ -174,6 +171,8 @@ class Mando(Character):
     def upd_att(self, board, key, frame):
         for weapon in self.weapons:
             weapon.advance(board)
+            if self.fast:
+                weapon.advance(board)
             if frame < WIDTH - ENEMY_OFFSET:
                 weapon.advance(board)
         
@@ -183,6 +182,9 @@ class Mando(Character):
                 self.shield = True
                 self.id = 11
                 self.place(board, self.id)
+
+        if key == "q":
+            sys.exit()
 
         if self.fast and time.time() - self.ftime >= 5:
             self.fast = False
