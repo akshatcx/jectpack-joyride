@@ -1,6 +1,6 @@
 import numpy as np
 from config import *
-from props import Bullet
+from props import Bullet, IceBall
 from base import Base
 import time
 
@@ -83,7 +83,7 @@ class Mando(Character):
                 self.place(board, 0)
                 self.location[1] += 1
                 self.place(board, self.id)
-            elif max(self.right) in [7, 8, 9, 10] and self.shield == False:
+            elif max(self.right) in [7, 8, 9, 10, 15] and self.shield == False:
                 self.lives -= 1
 
         if key == "a":
@@ -93,7 +93,7 @@ class Mando(Character):
                 self.place(board, 0)
                 self.location[1] -= 1
                 self.place(board, self.id)
-            elif max(self.left) in [7, 8, 9, 10]:
+            elif max(self.left) in [7, 8, 9, 10, 15]:
                 self.lives -= 1
 
         if key == "w":
@@ -106,7 +106,7 @@ class Mando(Character):
                 self.place(board, 0)
                 self.location[0] -= 1
                 self.place(board, self.id)
-            elif max(self.up) in [7, 8, 9, 10]:
+            elif max(self.up) in [7, 8, 9, 10, 15]:
                 self.lives -= 1
 
         elif self.velocity_y < 0:
@@ -116,7 +116,7 @@ class Mando(Character):
                 self.place(board, 0)
                 self.location[0] += 1
                 self.place(board, self.id)
-            elif max(self.down) in [7, 8, 9, 10]:
+            elif max(self.down) in [7, 8, 9, 10, 15]:
                 self.lives -= 1
 
         self.velocity_y = -1
@@ -137,14 +137,15 @@ class Mando(Character):
                 self.place(board, 0)
                 self.location[1] += 1
                 self.place(board, self.id)
-        elif max(self.right) in [7, 8, 9, 10] and self.shield == False:
+        elif max(self.right) in [7, 8, 9, 10, 15] and self.shield == False:
             self.lives -= 1
         return score_delta
 
-    def upd_att(self, board, key):
+    def upd_att(self, board, key, frame):
         for weapon in self.weapons:
             weapon.advance(board)
-            weapon.advance(board)
+            if frame < WIDTH - ENEMY_OFFSET:
+                weapon.advance(board)
         
         if key == "z":
             if time.time() - self.stime >= 70:
@@ -156,5 +157,35 @@ class Mando(Character):
         if self.shield and time.time() - self.stime >= 10:
             self.shield = False
             self.id = 5
+
+class Enemy(Character):
+    def __init__(self, board):
+        super().__init__()
+        self.id = 14
+        self.lives = E_LIVES
+        self.health = E_HEALTH
+        self.size = E_SIZE
+        self.location = E_INIT_LOCATION
+        self.place(board, self.id)
     
+    def move(self, board, location):
+        self.place(board, 0)
+        self.location[0] = location[0]
+        self.place(board, self.id)
+    
+    def shoot(self, board):
+        ice = IceBall(board, [self.location[0] - self.size[0] +1,self.location[1] - 1])
+        self.weapons.append(ice)
+    
+    def move_ice(self, board):
+        for ice in self.weapons:
+            ice.advance(board)
+        self.left = board[
+                self.location[0] - self.size[0] + 1 : self.location[0] + 1,
+                self.location[1] - 1,
+        ]
+        if 4 in self.left:
+            self.lives -= 1
+
+
     

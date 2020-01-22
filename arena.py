@@ -68,6 +68,8 @@ class Arena:
             9: Back.RED + Fore.RED + " ",
             10: Back.RED + Fore.RED + " ",
             11: Back.MAGENTA + Fore.MAGENTA + " ",
+            14: Back.BLUE + Fore.BLUE + " ",
+            15: Back.BLACK + Fore.BLUE + "\u2744",
         }
         """
         buff = "\n".join(
