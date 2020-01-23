@@ -12,7 +12,7 @@ class Character(Base):
 
         self._lives = 0
         self.health = 0
-        self.velocity_y = -1 * GRAVITY
+        self.velocity_y = 0
 
         self.weapons = []
         self.right = []
@@ -30,7 +30,7 @@ class Character(Base):
 
     def check_proximity(self, board, frame):
         if self.location[1] + self.size[1] >= frame + HEIGHT * 2 + 1:
-            self.right = [100] * self.size[0]
+            self.right = [-1] * self.size[0]
         else:
             self.right = board[
                 self.location[0] - self.size[0] + 1 : self.location[0] + 1,
@@ -38,7 +38,7 @@ class Character(Base):
             ]
 
         if self.location[1] - 1 < frame:
-            self.left = [100] * self.size[0]
+            self.left = [-1] * self.size[0]
         else:
             self.left = board[
                 self.location[0] - self.size[0] + 1 : self.location[0] + 1,
@@ -46,7 +46,7 @@ class Character(Base):
             ]
 
         if self.location[0] - self.size[0] < 0:
-            self.up = [100] * self.size[1]
+            self.up = [-1] * self.size[1]
         else:
             self.up = board[
                 self.location[0] - self.size[0],
@@ -54,7 +54,7 @@ class Character(Base):
             ]
 
         if self.location[0] + 1 >= HEIGHT:
-            self.down = [100] * self.size[1]
+            self.down = [-1] * self.size[1]
         else:
             self.down = board[
                 self.location[0] + 1, self.location[1] : self.location[1] + self.size[1]
@@ -95,51 +95,56 @@ class Mando(Character):
         if key == "d":
             self.powerup(self.right)
             # Check if there is space on the right
-            if max(self.right) <= 2 or self.shield:
+            if max(self.right) in [7, 8, 9, 10, 15] and not self.shield:
+                self.lives -= 1
+            if -1 not in self.right:
                 score_delta += self.pick_coin(board, self.right)
                 self.place(board, 0)
                 self.location[1] += 1
                 self.place(board, self.id)
-            elif max(self.right) in [7, 8, 9, 10, 15] and self.shield == False:
-                self.lives -= 1
+            
 
         if key == "a":
             self.powerup(self.left)
             # Check if there is space on the left
-            if max(self.left) <= 2 or self.shield:
+            if max(self.left) in [7, 8, 9, 10, 15] and not self.shield:
+                self.lives -= 1
+            if -1 not in self.left:
                 score_delta += self.pick_coin(board, self.left)
                 self.place(board, 0)
                 self.location[1] -= 1
                 self.place(board, self.id)
-            elif max(self.left) in [7, 8, 9, 10, 15]:
-                self.lives -= 1
+            
 
         if key == "w":
-            self.velocity_y += JUMP_VEL
-
-        if self.velocity_y > 0:
             self.powerup(self.up)
             # Check if there is space on the top
-            if max(self.up) <= 2 or self.shield:
+            if max(self.up) in [7, 8, 9, 10, 15] and not self.shield:
+                self.lives -= 1
+            if -1 not in self.up:
                 score_delta += self.pick_coin(board, self.up)
                 self.place(board, 0)
                 self.location[0] -= 1
                 self.place(board, self.id)
-            elif max(self.up) in [7, 8, 9, 10, 15]:
-                self.lives -= 1
+            
+            self.velocity_y = 0
 
-        elif self.velocity_y < 0:
+        
+        self.velocity_y += GRAVITY
+        
+        for i in range(int(self.velocity_y)):
+            self.check_proximity(board, frame)
             self.powerup(self.down)
             # Check if there is space in the bottom
-            if (max(self.down) <= 2 or self.shield) and max(self.down) != 6:
+            if max(self.down) in [7, 8, 9, 10, 15] and not self.shield:
+                self.lives -= 1
+            if -1 not in self.down and 6 not in self.down:
                 score_delta += self.pick_coin(board, self.down)
                 self.place(board, 0)
                 self.location[0] += 1
                 self.place(board, self.id)
-            elif max(self.down) in [7, 8, 9, 10, 15]:
-                self.lives -= 1
+            
 
-        self.velocity_y = -1
 
         if key == "e":
             bullet = Bullet(
@@ -174,13 +179,14 @@ class Mando(Character):
         score_delta = 0
         self.check_proximity(board, frame)
         self.powerup(self.right)
-        if max(self.right) <= 2 or self.shield:
+        if max(self.right) in [7, 8, 9, 10, 15] and not self.shield:
+            self.lives -= 1
+        if -1 not in self.right:
             score_delta += self.pick_coin(board, self.right)
             self.place(board, 0)
             self.location[1] += 1
             self.place(board, self.id)
-        elif max(self.right) in [7, 8, 9, 10, 15] and self.shield == False:
-            self.lives -= 1
+        
         return score_delta
 
     def upd_att(self, board, key, frame):
