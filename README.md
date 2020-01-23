@@ -10,11 +10,15 @@ python3 main.py
 Make your way through the arena avoiding all the obstacles and collecting coins to increase score. At the end defeat the dragon to win the game!
 
 ### Movement
-Move up `w`
-Move right `d`
-Move left `a`
-Shoot bullets `e`
-Use Shield `z`
+Move up: `w`
 
-Quit Game `q`
+Move right: `d`
+
+Move left: `a`
+
+Shoot bullets: `e`
+
+Use Shield: `z`
+
+Quit Game: `q`
 
