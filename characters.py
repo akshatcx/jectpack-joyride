@@ -9,7 +9,7 @@ import sys
 class Character(Base):
     def __init__(self):
 
-        self.lives = 0
+        self._lives = 0
         self.health = 0
         self.velocity_y = -1 * GRAVITY
         
@@ -19,6 +19,14 @@ class Character(Base):
         self.down = []
         self.up = []
 
+    @property
+    def lives(self):
+        return self._lives
+    
+    @lives.setter
+    def lives(self, var):
+        self._lives = var
+    
     def check_proximity(self, board, frame):
         if self.location[1] + self.size[1] >= frame + HEIGHT*2 + 1:
             self.right = [100] * self.size[0]
