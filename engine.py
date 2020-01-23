@@ -27,28 +27,30 @@ class Engine:
         if self.frame < WIDTH - ENEMY_OFFSET:
             for i in range(self.framerate):
                 self.frame += 1
-                status += self.player.move_relative(self.arena.board, self.frame) 
-        self.player.checkmag(self.arena.board, self.frame)           
+                status += self.player.move_relative(self.arena.board, self.frame)
+        self.player.checkmag(self.arena.board, self.frame)
         status += self.player.move(self.arena.board, key, self.frame)
         self.player.upd_att(self.arena.board, key, self.frame)
-        self.enemy.move(self.arena.board,self.player.location)
+        self.enemy.move(self.arena.board, self.player.location)
         if int(time.time() - self.start) % 3 == 0:
             self.enemy.shoot(self.arena.board)
         self.enemy.move_ice(self.arena.board)
         self.score += status
 
     def repaint(self):
-        #sys.stdout.flush()
-        #sys.stdout.write("\x1bc")
+        # sys.stdout.flush()
+        # sys.stdout.write("\x1bc")
         print("\x1bc")
         self.arena.render(self.frame, self.enemy.location)
-        print(f"Score: {self.score}\t Lives: {self.player.lives}\t Time Left: {int(GAME_TIME - (time.time() - self.start))}secs\t Enemy Lives: {self.enemy.lives}\n")
+        print(
+            f"Score: {self.score}\t Lives: {self.player.lives}\t Time Left: {int(GAME_TIME - (time.time() - self.start))}secs\t Enemy Lives: {self.enemy.lives}\n"
+        )
 
     def game_over(self):
         # sys.stdout.write("\x1bc")
         print("GAME OVER!!")
         print(f"Final Score: {self.score}")
-    
+
     def win(self):
         print(f"You Win!\nFinal Score: {self.score}")
 

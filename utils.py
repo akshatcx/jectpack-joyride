@@ -28,12 +28,14 @@ class NBInput:
     def flush(cls):
         termios.tcflush(sys.stdin, termios.TCIOFLUSH)
 
+
 def maxw(x):
     if x >= WIDTH:
         return WIDTH - 1
     if x < 0:
         return 0
     return x
+
 
 def maxh(x):
     if x >= HEIGHT:

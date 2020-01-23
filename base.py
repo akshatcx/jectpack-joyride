@@ -1,6 +1,7 @@
 import numpy as np
 from config import *
 
+
 class Base:
     def __init__(self):
         self._id = None
@@ -18,24 +19,23 @@ class Base:
     @property
     def id(self):
         return self._id
-    
+
     @id.setter
     def id(self, var):
         self._id = var
-    
+
     @property
     def size(self):
         return self._size
-    
+
     @size.setter
     def size(self, var):
         self._size = var
-    
+
     @property
     def location(self):
         return self._location
-    
+
     @location.setter
     def location(self, var):
         self._location = var
-

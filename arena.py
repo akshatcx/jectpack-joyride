@@ -94,8 +94,7 @@ class Arena:
         )
         stdout.write(buff + "\n")
         """
-        
-        
+
         dragon = "  /,,;';;.  ,;;;..  ,,;.    '\n.',''   `::;:' ``;;;;'  `..' \n`      ,,/'     ,,//         "
         dnp = np.zeros(E_SIZE)
 
@@ -110,15 +109,19 @@ class Arena:
             "`": 28,
         }
 
-        for i,line in zip(range(3),dragon.split('\n')):
+        for i, line in zip(range(3), dragon.split("\n")):
             for j, l in zip(range(29), line):
-                dnp[i,j] = m[l]
-        
-        self.board[dloc[0]-2:dloc[0] -2+ E_SIZE[0],dloc[1]:dloc[1] + E_SIZE[1]] = dnp
-        
+                dnp[i, j] = m[l]
+
+        self.board[
+            dloc[0] - 2 : dloc[0] - 2 + E_SIZE[0], dloc[1] : dloc[1] + E_SIZE[1]
+        ] = dnp
+
         for row in self.board:
-            for pixel in row[frame:frame+ (HEIGHT*3)+1]:
-                print(color_mappings[pixel], end = '')
+            for pixel in row[frame : frame + (HEIGHT * 3) + 1]:
+                print(color_mappings[pixel], end="")
             print(Style.RESET_ALL)
 
-        self.board[dloc[0]-2:dloc[0] + E_SIZE[0]-2,dloc[1]:dloc[1] + E_SIZE[1]] = np.full(E_SIZE, 14)
+        self.board[
+            dloc[0] - 2 : dloc[0] + E_SIZE[0] - 2, dloc[1] : dloc[1] + E_SIZE[1]
+        ] = np.full(E_SIZE, 14)
