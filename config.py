@@ -21,7 +21,7 @@ P_SIZE = [1, 2]
 # Mando
 M_LIVES = 3
 M_HEALTH = 100
-M_SIZE = [3, 2]
+M_SIZE = [4, 2]
 M_INIT_LOCATION = [HEIGHT - F_SIZE[0] - 1, int(PROP_OFFSETL / 2)]
 
 E_LIVES = 5

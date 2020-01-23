@@ -22,13 +22,13 @@ class Arena:
         floor = Floor(new_board, [HEIGHT - 1, 0])
 
         prop_counts = {
-            Coin: 12,
-            Lazer_H: 8,
-            Lazer_V: 8,
-            Lazer_D1: 6,
-            Lazer_D2: 6,
+            Coin: 20,
+            Lazer_H: 10,
+            Lazer_V: 10,
+            Lazer_D1: 8,
+            Lazer_D2: 8,
             Magnet: 1,
-            Powerup: 2,
+            Powerup: 5,
         }
 
         for prop in prop_counts:
@@ -84,6 +84,7 @@ class Arena:
             26: Back.BLACK + Fore.RED + ".",
             27: Back.BLACK + Fore.RED + ":",
             28: Back.BLACK + Fore.RED + "`",
+            30: Back.BLACK + Fore.RED + "\U0001F525"
         }
         """
         buff = "\n".join(

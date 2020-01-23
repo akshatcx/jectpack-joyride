@@ -13,51 +13,54 @@ class Engine:
     """
 
     def __init__(self):
-        self.arena = Arena()
-        self.player = Mando(self.arena.board)
-        self.enemy = Enemy(self.arena.board)
-        self.score = 0
-        self.start = time.time()
-        self.frame = 0
-        self.framerate = 2
+        self.__arena = Arena()
+        self.__player = Mando(self.__arena.board)
+        self.__enemy = Enemy(self.__arena.board)
+        self.__score = 0
+        self.__start = time.time()
+        self.__frame = 0
+        self.__framerate = 2
 
     def transition(self, key):
         status = 0
-        self.framerate = self.player.frate()
-        if self.frame < WIDTH - ENEMY_OFFSET:
-            for i in range(self.framerate):
-                self.frame += 1
-                status += self.player.move_relative(self.arena.board, self.frame)
-        self.player.checkmag(self.arena.board, self.frame)
-        status += self.player.move(self.arena.board, key, self.frame)
-        self.player.upd_att(self.arena.board, key, self.frame)
-        self.enemy.move(self.arena.board, self.player.location)
-        if int(time.time() - self.start) % 3 == 0:
-            self.enemy.shoot(self.arena.board)
-        self.enemy.move_ice(self.arena.board)
-        self.score += status
+        self.__framerate = self.__player.frate()
+        if self.__frame < WIDTH - ENEMY_OFFSET:
+            for i in range(self.__framerate):
+                self.__frame += 1
+                status += self.__player.move_relative(self.__arena.board, self.__frame)
+        self.__player.checkmag(self.__arena.board, self.__frame)
+        status += self.__player.move(self.__arena.board, key, self.__frame)
+        self.__player.upd_att(self.__arena.board, key, self.__frame)
+        self.__enemy.move(self.__arena.board, self.__player.location)
+        if int(time.time() - self.__start) % 3 == 0:
+            self.__enemy.shoot(self.__arena.board)
+        self.__enemy.move_ice(self.__arena.board)
+        self.__score += status
+        if self.__score > 10:
+            self.__player.activate_dragon()
+        self.__player.render_tail(self.__arena.board)
 
     def repaint(self):
         # sys.stdout.flush()
         # sys.stdout.write("\x1bc")
         print("\x1bc")
-        self.arena.render(self.frame, self.enemy.location)
+        self.__arena.render(self.__frame, self.__enemy.location)
         print(
-            f"Score: {self.score}\t Lives: {self.player.lives}\t Time Left: {int(GAME_TIME - (time.time() - self.start))}secs\t Enemy Lives: {self.enemy.lives}\n"
+            f"Score: {self.__score}\t Lives: {self.__player.lives}\t Time Left: {int(GAME_TIME - (time.time() - self.__start))}secs\t Enemy Lives: {self.__enemy.lives}\n"
         )
 
     def game_over(self):
         # sys.stdout.write("\x1bc")
         print("GAME OVER!!")
-        print(f"Final Score: {self.score}")
+        print(f"Final Score: {self.__score}")
 
     def win(self):
-        print(f"You Win!\nFinal Score: {self.score}")
+        print(f"You Win!\nFinal Score: {self.__score}")
 
     def play(self):
         KEYS = NBInput()
         KEYS.nb_term()
-        while time.time() - self.start < GAME_TIME:
+        while time.time() - self.__start < GAME_TIME:
             self.repaint()
             time.sleep(0.08)
             INPUT = ""
@@ -65,9 +68,9 @@ class Engine:
                 INPUT = KEYS.get_ch()
             self.transition(INPUT)
             KEYS.flush()
-            if self.enemy.lives <= 0:
+            if self.__enemy.lives <= 0:
                 self.win()
                 break
-            if self.player.lives <= 0:
+            if self.__player.lives <= 0:
                 self.game_over()
                 break

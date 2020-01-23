@@ -11,14 +11,13 @@ class Character(Base):
     def __init__(self):
 
         self._lives = 0
-        self.health = 0
-        self.velocity_y = 0
+        self._velocity_y = 0
 
-        self.weapons = []
-        self.right = []
-        self.left = []
-        self.down = []
-        self.up = []
+        self._weapons = []
+        self._right = []
+        self._left = []
+        self._down = []
+        self._up = []
 
     @property
     def lives(self):
@@ -27,36 +26,44 @@ class Character(Base):
     @lives.setter
     def lives(self, var):
         self._lives = var
+    
+    @property
+    def velocity_y(self):
+        return self._velocity_y
+
+    @velocity_y.setter
+    def velocity_y(self, var):
+        self._velocity_y = var
 
     def check_proximity(self, board, frame):
         if self.location[1] + self.size[1] >= frame + HEIGHT * 2 + 1:
-            self.right = [-1] * self.size[0]
+            self._right = [-1] * self.size[0]
         else:
-            self.right = board[
+            self._right = board[
                 self.location[0] - self.size[0] + 1 : self.location[0] + 1,
                 self.location[1] + self.size[1],
             ]
 
         if self.location[1] - 1 < frame:
-            self.left = [-1] * self.size[0]
+            self._left = [-1] * self.size[0]
         else:
-            self.left = board[
+            self._left = board[
                 self.location[0] - self.size[0] + 1 : self.location[0] + 1,
                 self.location[1] - 1,
             ]
 
         if self.location[0] - self.size[0] < 0:
-            self.up = [-1] * self.size[1]
+            self._up = [-1] * self.size[1]
         else:
-            self.up = board[
+            self._up = board[
                 self.location[0] - self.size[0],
                 self.location[1] : self.location[1] + self.size[1],
             ]
 
         if self.location[0] + 1 >= HEIGHT:
-            self.down = [-1] * self.size[1]
+            self._down = [-1] * self.size[1]
         else:
-            self.down = board[
+            self._down = board[
                 self.location[0] + 1, self.location[1] : self.location[1] + self.size[1]
             ]
 
@@ -67,25 +74,32 @@ class Mando(Character):
         Character.__init__(self)
         self.id = 5
         self.lives = M_LIVES
-        self.health = M_HEALTH
         self.size = M_SIZE
         self.location = M_INIT_LOCATION
         self.place(board, self.id)
-        self.shield = False
-        self.stime = time.time() - 70
-        self.fast = False
-        self.ftime = time.time() - 5
+        self.__shield = False
+        self.__stime = time.time() - 70
+        self.__fast = False
+        self.__ftime = time.time() - 5
+        self.__tail = [1,0,1,2,1,0,1,2,1,0,1,2]
+        self.__dragon = False
+        self.__dflag = False
+
+    def activate_dragon(self):
+        if not self.__dflag:
+            self.__dragon = True
+            self.__dflag = True
 
     def pick_coin(self, board, proximity):
         return np.count_nonzero(proximity == 1)
 
     def powerup(self, proximity):
         if 2 in proximity:
-            self.ftime = time.time()
-            self.fast = True
+            self.__ftime = time.time()
+            self.__fast = True
 
     def frate(self):
-        if self.fast:
+        if self.__fast:
             return 2
         return 1
 
@@ -93,36 +107,45 @@ class Mando(Character):
         self.check_proximity(board, frame)
         score_delta = 0
         if key == "d":
-            self.powerup(self.right)
+            self.powerup(self._right)
             # Check if there is space on the right
-            if max(self.right) in [7, 8, 9, 10, 15] and not self.shield:
-                self.lives -= 1
-            if -1 not in self.right:
-                score_delta += self.pick_coin(board, self.right)
+            if max(self._right) in [7, 8, 9, 10, 15] and not self.__shield:
+                if self.__dragon:
+                    self.__dragon = False
+                else:
+                    self.lives -= 1
+            if -1 not in self._right:
+                score_delta += self.pick_coin(board, self._right)
                 self.place(board, 0)
                 self.location[1] += 1
                 self.place(board, self.id)
             
 
         if key == "a":
-            self.powerup(self.left)
+            self.powerup(self._left)
             # Check if there is space on the left
-            if max(self.left) in [7, 8, 9, 10, 15] and not self.shield:
-                self.lives -= 1
-            if -1 not in self.left:
-                score_delta += self.pick_coin(board, self.left)
+            if max(self._left) in [7, 8, 9, 10, 15] and not self.__shield:
+                if self.__dragon:
+                    self.__dragon = False
+                else:
+                    self.lives -= 1
+            if -1 not in self._left:
+                score_delta += self.pick_coin(board, self._left)
                 self.place(board, 0)
                 self.location[1] -= 1
                 self.place(board, self.id)
             
 
         if key == "w":
-            self.powerup(self.up)
+            self.powerup(self._up)
             # Check if there is space on the top
-            if max(self.up) in [7, 8, 9, 10, 15] and not self.shield:
-                self.lives -= 1
-            if -1 not in self.up:
-                score_delta += self.pick_coin(board, self.up)
+            if max(self._up) in [7, 8, 9, 10, 15] and not self.__shield:
+                if self.__dragon:
+                    self.__dragon = False
+                else:
+                    self.lives -= 1
+            if -1 not in self._up:
+                score_delta += self.pick_coin(board, self._up)
                 self.place(board, 0)
                 self.location[0] -= 1
                 self.place(board, self.id)
@@ -134,12 +157,15 @@ class Mando(Character):
         
         for i in range(int(self.velocity_y)):
             self.check_proximity(board, frame)
-            self.powerup(self.down)
+            self.powerup(self._down)
             # Check if there is space in the bottom
-            if max(self.down) in [7, 8, 9, 10, 15] and not self.shield:
-                self.lives -= 1
-            if -1 not in self.down and 6 not in self.down:
-                score_delta += self.pick_coin(board, self.down)
+            if max(self._down) in [7, 8, 9, 10, 15] and not self.__shield:
+                if self.__dragon:
+                    self.__dragon = False
+                else:
+                    self.lives -= 1
+            if -1 not in self._down and 6 not in self._down:
+                score_delta += self.pick_coin(board, self._down)
                 self.place(board, 0)
                 self.location[0] += 1
                 self.place(board, self.id)
@@ -151,8 +177,10 @@ class Mando(Character):
                 board,
                 [self.location[0] - self.size[0] + 1, self.location[1] + self.size[1]],
             )
-            self.weapons.append(bullet)
-            print(self.weapons)
+            self._weapons.append(bullet)
+            print(self._weapons)
+
+        self.render_tail(board)
 
         return score_delta
 
@@ -165,11 +193,10 @@ class Mando(Character):
             ]
         ):
             mag_loc = np.where(board == 3)
-            if int(mag_loc[0]) > self.location[0]:
-                self.move(board, "", frame)
-            elif int(mag_loc[0]) < self.location[0]:
-                self.move(board, "w", frame)
-                self.move(board, "w", frame)
+            #if int(mag_loc[0]) > self.location[0]:
+            #    self.move(board, "", frame)
+            #elif int(mag_loc[0]) < self.location[0]:
+            #    self.move(board, "w", frame)
             if int(mag_loc[1]) > self.location[1]:
                 self.move(board, "d", frame)
             elif int(mag_loc[1]) < self.location[1]:
@@ -178,11 +205,14 @@ class Mando(Character):
     def move_relative(self, board, frame):
         score_delta = 0
         self.check_proximity(board, frame)
-        self.powerup(self.right)
-        if max(self.right) in [7, 8, 9, 10, 15] and not self.shield:
-            self.lives -= 1
-        if -1 not in self.right:
-            score_delta += self.pick_coin(board, self.right)
+        self.powerup(self._right)
+        if max(self._right) in [7, 8, 9, 10, 15] and not self.__shield:
+            if self.__dragon:
+                self.__dragon = False
+            else:
+                self.lives -= 1
+        if -1 not in self._right:
+            score_delta += self.pick_coin(board, self._right)
             self.place(board, 0)
             self.location[1] += 1
             self.place(board, self.id)
@@ -190,29 +220,37 @@ class Mando(Character):
         return score_delta
 
     def upd_att(self, board, key, frame):
-        for weapon in self.weapons:
+        for weapon in self._weapons:
             weapon.advance(board)
-            if self.fast:
+            if self.__fast:
                 weapon.advance(board)
             if frame < WIDTH - ENEMY_OFFSET:
                 weapon.advance(board)
 
-        if key == "z":
-            if time.time() - self.stime >= 70:
-                self.stime = time.time()
-                self.shield = True
+        if key == " ":
+            if time.time() - self.__stime >= 70:
+                self.__stime = time.time()
+                self.__shield = True
                 self.id = 11
                 self.place(board, self.id)
 
         if key == "q":
             sys.exit()
 
-        if self.fast and time.time() - self.ftime >= 5:
-            self.fast = False
-        if self.shield and time.time() - self.stime >= 10:
-            self.shield = False
+        if self.__fast and time.time() - self.__ftime >= 5:
+            self.__fast = False
+        if self.__shield and time.time() - self.__stime >= 10:
+            self.__shield = False
             self.id = 5
 
+    def render_tail(self, board):
+        if self.__dragon:
+            self.__tail = np.roll(self.__tail,1)
+            board[self.location[0]-4:self.location[0]+1, self.location[1]-len((self.__tail))-4:self.location[1] - 1] = np.full((5,len(self.__tail)+3),0)
+            for piece, i in zip(self.__tail, range(len(self.__tail))):
+                board[self.location[0] - piece - 1:self.location[0] -piece + 1, self.location[1] -i -1] = [self.id]*2
+            
+            board[self.location[0] - self.size[0], self.location[1]+self.size[1]:self.location[1] + self.size[1] + 4] = [30]*4
 
 class Enemy(Character):
     def __init__(self, board):
@@ -233,14 +271,14 @@ class Enemy(Character):
         ice = IceBall(
             board, [self.location[0] - self.size[0] + 1, self.location[1] - 1]
         )
-        self.weapons.append(ice)
+        self._weapons.append(ice)
 
     def move_ice(self, board):
-        for ice in self.weapons:
+        for ice in self._weapons:
             ice.advance(board)
-        self.left = board[
+        self._left = board[
             self.location[0] - self.size[0] + 1 : self.location[0] + 1,
             self.location[1] - 1,
         ]
-        if 4 in self.left:
+        if 4 in self._left:
             self.lives -= 1
